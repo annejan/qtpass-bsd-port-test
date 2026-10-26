@@ -1,7 +1,11 @@
-# sysutils/qtpass port test bed
+# QtPass BSD port test bed
 
-CI for the FreeBSD port of [QtPass](https://qtpass.org). Every patch in
-`patches/` is the diff that goes to
+CI for the BSD ports of [QtPass](https://qtpass.org): FreeBSD
+`sysutils/qtpass` (maintained by us) and OpenBSD `security/qtpass` (see the
+third job below). This repository was called `qtpass-freebsd-port-test` until
+it tested OpenBSD too; GitHub redirects the old name.
+
+Every FreeBSD patch in `patches/` is the diff that goes to
 [Bugzilla](https://bugs.freebsd.org/bugzilla/) for the port; this repository
 applies it to a fresh FreeBSD ports tree inside a FreeBSD VM and runs what a
 ports committer would before committing:
