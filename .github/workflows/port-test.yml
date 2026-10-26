@@ -35,6 +35,11 @@ on:
         description: "OpenBSD port patch to test (path in this repository; empty = newest in patches/openbsd/)"
         required: false
         default: ""
+      only:
+        description: "Run only these jobs"
+        type: choice
+        options: [all, freebsd, openbsd]
+        default: all
 
 permissions:
   contents: read
@@ -42,6 +47,7 @@ permissions:
 jobs:
   port:
     name: FreeBSD ${{ matrix.release }} ${{ matrix.arch }}
+    if: inputs.only != 'openbsd'
     runs-on: ubuntu-latest
     timeout-minutes: 300
     strategy:
@@ -146,6 +152,7 @@ jobs:
   # has no Qt6 anywhere, so each would mean building Qt6 under emulation.
   poudriere:
     name: poudriere testport FreeBSD ${{ matrix.release }} ${{ matrix.jail_arch }}
+    if: inputs.only != 'openbsd'
     runs-on: ubuntu-latest
     timeout-minutes: 300
     strategy:
@@ -235,6 +242,7 @@ jobs:
   # dependency.
   openbsd:
     name: OpenBSD ${{ matrix.release }} amd64
+    if: inputs.only != 'freebsd'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
@@ -284,10 +292,15 @@ jobs:
             cp -R /tmp/ports-current/security/qtpass /usr/ports/security/qtpass
             cd /usr/ports
             echo "=== apply the patch"
+            # Either a git diff from the ports root (a/security/qtpass/...),
+            # or the form sent to ports@: Index: headers and diff -u -p,
+            # relative to the port directory, applied with patch -p0.
             if git apply --check "$PATCH"; then
               git apply "$PATCH"
             elif git apply --check --reverse "$PATCH"; then
               echo "patch is already in ports -current; testing the port as committed"
+            elif (cd security/qtpass && patch -p0 -C < "$PATCH" > /dev/null); then
+              (cd security/qtpass && patch -p0 < "$PATCH")
             else
               exit 1
             fi

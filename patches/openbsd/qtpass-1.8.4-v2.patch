@@ -1,0 +1,64 @@
+Index: Makefile
+===================================================================
+--- Makefile.orig
++++ Makefile
+@@ -2,7 +2,7 @@ COMMENT=	multi-platform GUI for password
+ 
+ GH_ACCOUNT=	IJHack
+ GH_PROJECT=	QtPass
+-GH_TAGNAME=	v1.7.0
++GH_TAGNAME=	v1.8.4
+ PKGNAME=	${DISTNAME:L}
+ 
+ CATEGORIES=	security x11
+@@ -14,16 +14,17 @@ MAINTAINER=	Stefan Hagen <sh+ports@codev
+ # GPLv3+
+ PERMIT_PACKAGE=	Yes
+ 
+-WANTLIB+=	${COMPILER_LIBCXX} GL Qt5Core Qt5Gui Qt5Network Qt5Widgets
+-WANTLIB+=	c m
++WANTLIB += ${COMPILER_LIBCXX} GL Qt6Core Qt6Gui Qt6Network Qt6Widgets
++WANTLIB += c m
+ 
+ MODULES=	devel/qmake \
+-		x11/qt5
++		x11/qt6
+ 
+ RUN_DEPENDS=	devel/git \
+ 		security/gnupg>=2.2.23p1 \
+ 		security/password-store \
+-		security/pwgen
++		security/pwgen \
++		x11/qt6/qtsvg
+ 
+ NO_TEST=	Yes
+ 
+Index: distinfo
+===================================================================
+--- distinfo.orig
++++ distinfo
+@@ -1,2 +1,2 @@
+-SHA256 (QtPass-1.7.0.tar.gz) = Fte/ARFKfxHC42G0bhUGP0GaJ77/VKlphbcG2nVnA8M=
+-SIZE (QtPass-1.7.0.tar.gz) = 1167619
++SHA256 (QtPass-1.8.4.tar.gz) = UjaDFUYr5paONCHq9OTgT6PyvzZlLok3Kky16iipASE=
++SIZE (QtPass-1.8.4.tar.gz) = 1755558
+Index: pkg/PLIST
+===================================================================
+--- pkg/PLIST.orig
++++ pkg/PLIST
+@@ -1 +1,15 @@
+ @bin bin/qtpass
++share/applications/
++share/applications/qtpass.desktop
++share/icons/
++share/icons/hicolor/
++share/icons/hicolor/512x512/
++share/icons/hicolor/512x512/apps/
++share/icons/hicolor/512x512/apps/qtpass-icon.png
++share/icons/hicolor/scalable/
++share/icons/hicolor/scalable/apps/
++share/icons/hicolor/scalable/apps/qtpass-icon.svg
++share/metainfo/
++share/metainfo/org.qtpass.QtPass.metainfo.xml
++@tag update-desktop-database
++@tag gtk-update-icon-cache %D/share/icons/hicolor
