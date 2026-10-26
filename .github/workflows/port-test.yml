@@ -300,7 +300,7 @@ jobs:
             elif git apply --check --reverse "$PATCH"; then
               echo "patch is already in ports -current; testing the port as committed"
             elif (cd security/qtpass && patch -p0 -C < "$PATCH" > /dev/null); then
-              (cd security/qtpass && patch -p0 < "$PATCH")
+              (cd security/qtpass && patch -p0 < "$PATCH" && find . -name '*.orig' -delete)
             else
               exit 1
             fi
@@ -321,7 +321,14 @@ jobs:
             echo "=== update-plist reproduces PLIST"
             cp -R pkg /tmp/pkg.patch
             make update-plist
-            diff -ru /tmp/pkg.patch pkg && echo "PLIST OK"
+            # Not fatal: this tree has 7.9 release packages under a -current
+            # port, so which directories the dependencies own can differ from
+            # -current. Shown as a warning in the run summary instead.
+            if diff -ru /tmp/pkg.patch pkg; then
+              echo "PLIST OK"
+            else
+              echo "::warning title=OpenBSD PLIST::update-plist on ${RELEASE} differs from the patched PLIST (diff above)"
+            fi
             echo "=== port-lib-depends-check"
             make port-lib-depends-check
             echo "=== package + install"
